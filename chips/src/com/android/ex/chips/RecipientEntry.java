@@ -146,10 +146,10 @@ public class RecipientEntry {
      * with both an associated display name. This address has not been resolved
      * to a contact and therefore does not have a contact id or photo.
      */
-    public static RecipientEntry constructGeneratedEntry(String display, String address,
-            boolean isValid) {
+    public static RecipientEntry constructGeneratedEntry(String display, String address, Uri photoThumbnailUri,
+                                                         boolean isValid) {
         return new RecipientEntry(ENTRY_TYPE_PERSON, display, address, INVALID_DESTINATION_TYPE,
-                null, GENERATED_CONTACT, GENERATED_CONTACT, null, true, isValid,
+                null, GENERATED_CONTACT, GENERATED_CONTACT, photoThumbnailUri, true, isValid,
                 false /* isGalContact */);
     }
 

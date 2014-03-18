@@ -1037,7 +1037,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
             // this.
             display = tokens[0].getName();
             if (!TextUtils.isEmpty(display)) {
-                return RecipientEntry.constructGeneratedEntry(display, tokens[0].getAddress(),
+                return RecipientEntry.constructGeneratedEntry(display, tokens[0].getAddress(), null,
                         isValid);
             } else {
                 display = tokens[0].getAddress();
@@ -1706,7 +1706,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
         String destination = item.getDestination();
         if (!isPhoneQuery() && item.getContactId() == RecipientEntry.GENERATED_CONTACT) {
             entry = RecipientEntry.constructGeneratedEntry(item.getDisplayName(),
-                    destination, item.isValid());
+                    destination, item.getPhotoThumbnailUri(), item.isValid());
         } else if (RecipientEntry.isCreatedRecipient(item.getContactId())
                 && (TextUtils.isEmpty(item.getDisplayName())
                         || TextUtils.equals(item.getDisplayName(), destination)
