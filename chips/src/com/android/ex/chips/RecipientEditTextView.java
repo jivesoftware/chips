@@ -584,6 +584,14 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
         return tmpBitmap;
     }
 
+    protected boolean shouldShowPhotos(RecipientEntry contact) {
+        long contactId = contact.getContactId();
+        return isPhoneQuery() ?
+                contactId != RecipientEntry.INVALID_CONTACT
+                : (contactId != RecipientEntry.INVALID_CONTACT
+                        && (contactId != RecipientEntry.GENERATED_CONTACT &&
+                                !TextUtils.isEmpty(contact.getDisplayName())));
+    }
 
     private Bitmap createUnselectedChip(RecipientEntry contact, TextPaint paint,
             boolean leaveBlankIconSpacer) {
@@ -611,13 +619,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
             background.draw(canvas);
 
             // Don't draw photos for recipients that have been typed in OR generated on the fly.
-            long contactId = contact.getContactId();
-            boolean drawPhotos = isPhoneQuery() ?
-                    contactId != RecipientEntry.INVALID_CONTACT
-                    : (contactId != RecipientEntry.INVALID_CONTACT
-                            && (contactId != RecipientEntry.GENERATED_CONTACT &&
-                                    !TextUtils.isEmpty(contact.getDisplayName())));
-            if (drawPhotos) {
+            if ( shouldShowPhotos(contact) ) {
                 byte[] photoBytes = contact.getPhotoBytes();
                 // There may not be a photo yet if anything but the first contact address
                 // was selected.
