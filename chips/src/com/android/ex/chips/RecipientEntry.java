@@ -147,9 +147,9 @@ public class RecipientEntry {
      * to a contact and therefore does not have a contact id or photo.
      */
     public static RecipientEntry constructGeneratedEntry(String display, String address, Uri photoThumbnailUri,
-                                                         boolean isValid) {
+                                                         long dataId, boolean isValid) {
         return new RecipientEntry(ENTRY_TYPE_PERSON, display, address, INVALID_DESTINATION_TYPE,
-                null, GENERATED_CONTACT, GENERATED_CONTACT, photoThumbnailUri, true, isValid,
+                null, GENERATED_CONTACT, dataId, photoThumbnailUri, true, isValid,
                 false /* isGalContact */);
     }
 
