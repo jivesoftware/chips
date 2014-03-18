@@ -2044,13 +2044,13 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
         }
     }
 
-    private boolean shouldShowEditableText(DrawableRecipientChip currentChip) {
+    protected boolean shouldShowEditableText(DrawableRecipientChip currentChip) {
         long contactId = currentChip.getContactId();
         return contactId == RecipientEntry.INVALID_CONTACT
                 || (!isPhoneQuery() && contactId == RecipientEntry.GENERATED_CONTACT);
     }
 
-    private void showAddress(final DrawableRecipientChip currentChip, final ListPopupWindow popup,
+    protected void showAddress(final DrawableRecipientChip currentChip, final ListPopupWindow popup,
             int width) {
         if (!mAttachedToWindow) {
             return;
