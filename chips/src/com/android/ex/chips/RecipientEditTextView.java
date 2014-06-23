@@ -1022,7 +1022,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
     }
 
     // VisibleForTesting
-    RecipientEntry createTokenizedEntry(final String token) {
+    protected RecipientEntry createTokenizedEntry(final String token) {
         if (TextUtils.isEmpty(token)) {
             return null;
         }
@@ -2828,7 +2828,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
         }
     }
 
-    private void showCopyDialog(final String address) {
+    protected void showCopyDialog(final String address) {
         if (!mAttachedToWindow) {
             return;
         }
