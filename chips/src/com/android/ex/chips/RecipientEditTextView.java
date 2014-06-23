@@ -2693,7 +2693,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
      * MoreImageSpan is a simple class created for tracking the existence of a
      * more chip across activity restarts/
      */
-    private class MoreImageSpan extends ImageSpan {
+    public static class MoreImageSpan extends ImageSpan {
         public MoreImageSpan(Drawable b) {
             super(b);
         }
