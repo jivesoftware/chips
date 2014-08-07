@@ -667,6 +667,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
             Matrix matrix = new Matrix();
             matrix.setRectToRect(src, dst, Matrix.ScaleToFit.FILL);
             canvas.drawBitmap(photo, matrix, paint);
+            postInvalidate();
         }
     }
 
