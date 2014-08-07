@@ -100,6 +100,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.android.ex.chips.BaseRecipientAdapter.FetchPhotoCallback;
+
 /**
  * RecipientEditTextView is an auto complete text view for use with applications
  * that use the new Chips UI for addressing a message to recipients.
@@ -593,26 +595,26 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                                 !TextUtils.isEmpty(contact.getDisplayName())));
     }
 
-    private Bitmap createUnselectedChip(RecipientEntry contact, TextPaint paint,
+    private Bitmap createUnselectedChip(RecipientEntry contact, final TextPaint paint,
             boolean leaveBlankIconSpacer) {
         // Ellipsize the text so that it takes AT MOST the entire width of the
         // autocomplete text entry area. Make sure to leave space for padding
         // on the sides.
-        int height = (int) mChipHeight;
-        int iconWidth = height;
+        final int height = (int) mChipHeight;
+        final int iconWidth = height;
         float[] widths = new float[1];
         paint.getTextWidths(" ", widths);
         CharSequence ellipsizedText = ellipsizeText(createChipDisplayText(contact), paint,
                 calculateAvailableWidth() - iconWidth - widths[0]);
         // Make sure there is a minimum chip width so the user can ALWAYS
         // tap a chip without difficulty.
-        int width = Math.max(iconWidth * 2, (int) Math.floor(paint.measureText(ellipsizedText, 0,
+        final int width = Math.max(iconWidth * 2, (int) Math.floor(paint.measureText(ellipsizedText, 0,
                 ellipsizedText.length()))
                 + (mChipPadding * 2) + iconWidth);
 
         // Create the background of the chip.
         Bitmap tmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(tmpBitmap);
+        final Canvas canvas = new Canvas(tmpBitmap);
         Drawable background = getChipBackground(contact);
         if (background != null) {
             background.setBounds(0, 0, width, height);
@@ -625,32 +627,15 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                 // was selected.
                 if (photoBytes == null && contact.getPhotoThumbnailUri() != null) {
                     // TODO: cache this in the recipient entry?
-                    getAdapter().fetchPhoto(contact, contact.getPhotoThumbnailUri());
+                    getAdapter().fetchPhoto(contact, contact.getPhotoThumbnailUri(), new FetchPhotoCallback() {
+                        @Override
+                        public void onFinish(byte[] photoBytes) {
+                            drawChip(paint, canvas, width, height, iconWidth, photoBytes);
+                        }
+                    });
                     photoBytes = contact.getPhotoBytes();
                 }
-
-                Bitmap photo;
-                if (photoBytes != null) {
-                    photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
-                } else {
-                    // TODO: can the scaled down default photo be cached?
-                    photo = mDefaultContactPhoto;
-                }
-                // Draw the photo on the left side.
-                if (photo != null) {
-                    RectF src = new RectF(0, 0, photo.getWidth(), photo.getHeight());
-                    Rect backgroundPadding = new Rect();
-                    mChipBackground.getPadding(backgroundPadding);
-                    RectF dst = new RectF(width - iconWidth + backgroundPadding.left,
-                            0 + backgroundPadding.top,
-                            width - backgroundPadding.right,
-                            height - backgroundPadding.bottom);
-                    Matrix matrix = new Matrix();
-                    matrix.setRectToRect(src, dst, Matrix.ScaleToFit.FILL);
-                    canvas.drawBitmap(photo, matrix, paint);
-                }
-            } else if (!leaveBlankIconSpacer || isPhoneQuery()) {
-                iconWidth = 0;
+                drawChip(paint, canvas, width, height, iconWidth, photoBytes);
             }
             paint.setColor(getContext().getResources().getColor(android.R.color.black));
             // Vertically center the text in the chip.
@@ -660,6 +645,29 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
             Log.w(TAG, "Unable to draw a background for the chips as it was never set");
         }
         return tmpBitmap;
+    }
+
+    private void drawChip(TextPaint paint, Canvas canvas, int width, int height, int iconWidth, byte[] photoBytes) {
+        Bitmap photo;
+        if (photoBytes != null) {
+            photo = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.length);
+        } else {
+            // TODO: can the scaled down default photo be cached?
+            photo = mDefaultContactPhoto;
+        }
+        // Draw the photo on the left side.
+        if (photo != null) {
+            RectF src = new RectF(0, 0, photo.getWidth(), photo.getHeight());
+            Rect backgroundPadding = new Rect();
+            mChipBackground.getPadding(backgroundPadding);
+            RectF dst = new RectF(width - iconWidth + backgroundPadding.left,
+                    0 + backgroundPadding.top,
+                    width - backgroundPadding.right,
+                    height - backgroundPadding.bottom);
+            Matrix matrix = new Matrix();
+            matrix.setRectToRect(src, dst, Matrix.ScaleToFit.FILL);
+            canvas.drawBitmap(photo, matrix, paint);
+        }
     }
 
     /**

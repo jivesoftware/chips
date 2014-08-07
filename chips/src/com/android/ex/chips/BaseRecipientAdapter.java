@@ -853,7 +853,11 @@ public abstract class BaseRecipientAdapter extends BaseAdapter implements Filter
         photoLoadTask.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
-    protected void fetchPhoto(final RecipientEntry entry, final Uri photoThumbnailUri) {
+    public interface FetchPhotoCallback {
+        public void onFinish(byte[] photoBytes);
+    }
+
+    protected void fetchPhoto(final RecipientEntry entry, final Uri photoThumbnailUri, FetchPhotoCallback callback) {
         byte[] photoBytes = mPhotoCacheMap.get(photoThumbnailUri);
         if (photoBytes != null) {
             entry.setPhotoBytes(photoBytes);
@@ -872,6 +876,7 @@ public abstract class BaseRecipientAdapter extends BaseAdapter implements Filter
                 photoCursor.close();
             }
         }
+        callback.onFinish(photoBytes);
     }
 
     private Cursor doQuery(CharSequence constraint, int limit, Long directoryId) {
