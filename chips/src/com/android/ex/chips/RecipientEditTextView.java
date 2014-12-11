@@ -2307,6 +2307,20 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                 if (repl.length > 0) {
                     // There is a chip there! Just remove it.
                     Editable editable = getText();
+                    /*
+                     * At this point we are potentially left with a selectionStart that is either pointing beyond the
+                     * end of the string or at a remaining delimiter character.  We need to prune off that separator
+                     * so that mTokenizer.findTokenStart will find the beginning of the span rather than point at the
+                     * end of the span.
+                     */
+                    if (selStart == s.length() && selStart > 0) {
+                        // Back it up
+                        selStart--;
+                    }
+                    if (s.charAt(selStart) == COMMIT_CHAR_COMMA && selStart > 0) {
+                        // Back it up one more since this is the first char of SEPARATOR
+                        selStart--;
+                    }
                     // Add the separator token.
                     int tokenStart = mTokenizer.findTokenStart(editable, selStart);
                     int tokenEnd = mTokenizer.findTokenEnd(editable, tokenStart);
