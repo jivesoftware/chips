@@ -19,6 +19,7 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 19;
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 }
 
