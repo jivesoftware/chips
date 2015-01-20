@@ -2547,7 +2547,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                     addresses.add(createAddressText(chip.getEntry()));
                 }
             }
-            final BaseRecipientAdapter adapter = (BaseRecipientAdapter) getAdapter();
+            final BaseRecipientAdapter adapter = getAdapter();
             RecipientAlternatesAdapter.getMatchingRecipients(getContext(), adapter, addresses,
                     adapter.getAccount(), new RecipientMatchCallback() {
                         @Override
@@ -2675,7 +2675,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                     addresses.add(createAddressText(chip.getEntry()));
                 }
             }
-            final BaseRecipientAdapter adapter = (BaseRecipientAdapter) getAdapter();
+            final BaseRecipientAdapter adapter = getAdapter();
             RecipientAlternatesAdapter.getMatchingRecipients(getContext(), adapter, addresses,
                     adapter.getAccount(),
                     new RecipientMatchCallback() {
