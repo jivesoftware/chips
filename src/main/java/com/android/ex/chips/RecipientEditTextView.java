@@ -17,6 +17,7 @@
 
 package com.android.ex.chips;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -87,7 +88,6 @@ import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.android.ex.chips.RecipientAlternatesAdapter.RecipientMatchCallback;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.android.ex.chips.recipientchip.InvisibleRecipientChip;
@@ -712,6 +712,7 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
      * Takes into account both the set avatar position (start or end) as well as whether
      * the layout direction is LTR or RTL.
      */
+    @SuppressLint("NewApi")
     private boolean shouldPositionAvatarOnRight() {
         final boolean isRtl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 ?
                 getLayoutDirection() == LAYOUT_DIRECTION_RTL : false;
