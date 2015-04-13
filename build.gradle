@@ -20,6 +20,10 @@ android {
         targetSdkVersion 19;
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
+    lintOptions {
+        disable 'MissingTranslation', 'ExtraTranslation'
+        abortOnError true
+    }
 }
 
 dependencies {
