@@ -16,22 +16,22 @@
 
 package com.android.ex.chips;
 
+import android.annotation.TargetApi;
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.text.util.Rfc822Tokenizer;
 import android.widget.TextView;
 
-import com.android.ex.chips.BaseRecipientAdapter;
-import com.android.ex.chips.RecipientEditTextView;
-import com.android.ex.chips.RecipientEntry;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
+import com.android.ex.chips.recipientchip.ReplacementDrawableSpan;
 import com.android.ex.chips.recipientchip.VisibleRecipientChip;
 
 import java.util.regex.Pattern;
@@ -145,7 +145,7 @@ public class ChipsTest extends AndroidTestCase {
     public void testCreateDisplayText() {
         RecipientEditTextView view = createViewForTesting();
         RecipientEntry entry = RecipientEntry.constructGeneratedEntry("User Name, Jr",
-                "user@username.com", null, 0, true);
+                "user@username.com", true);
         String testAddress = view.createAddressText(entry);
         String testDisplay = view.createChipDisplayText(entry);
         assertEquals("Expected a properly formatted RFC email address",
@@ -167,7 +167,7 @@ public class ChipsTest extends AndroidTestCase {
                 testAddress);
 
         RecipientEntry alreadyNamed = RecipientEntry.constructGeneratedEntry("User Name",
-                "\"User Name, Jr\" <user@username.com>", null, 0, true);
+                "\"User Name, Jr\" <user@username.com>", true);
         testAddress = view.createAddressText(alreadyNamed);
         testDisplay = view.createChipDisplayText(alreadyNamed);
         assertEquals(
@@ -253,7 +253,7 @@ public class ChipsTest extends AndroidTestCase {
         int thirdStart = mEditable.toString().indexOf(third);
         int thirdEnd = thirdStart + third.trim().length();
         view.createMoreChipPlainText();
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         assertEquals(mEditable.getSpanStart(moreChip), thirdStart);
         assertEquals(mEditable.getSpanEnd(moreChip), thirdEnd + 1);
     }
@@ -280,7 +280,7 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(view.countTokens(view.getText()), 100);
         view.handlePendingChips();
         view.createMoreChip();
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         // We show 2 chips then place a more chip.
         int secondStart = view.getText().toString().indexOf(
                 (String) mTokenizer.terminateToken(RecipientEditTextView.CHIP_LIMIT + ""));
@@ -317,7 +317,7 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 3]), firstStart);
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 2]), secondStart);
         // Find the more chip.
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         assertEquals(mEditable.getSpanStart(moreChip), thirdStart);
         assertEquals(mEditable.getSpanEnd(moreChip), thirdEnd + 1);
 
@@ -407,7 +407,7 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 10]), firstStart);
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 9]), secondStart);
         // Find the more chip.
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         assertEquals(mEditable.getSpanStart(moreChip), thirdStart);
         assertEquals(mEditable.getSpanEnd(moreChip), tenthEnd + 1);
 
@@ -457,7 +457,7 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 3]), firstStart);
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 2]), secondStart);
         // Find the more chip.
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         assertEquals(mEditable.getSpanStart(moreChip), thirdStart);
         assertEquals(mEditable.getSpanEnd(moreChip), thirdEnd + 1);
 
@@ -501,7 +501,7 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 4]), firstStart);
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 3]), secondStart);
         // Find the more chip.
-        ImageSpan moreChip = view.getMoreChip();
+        ReplacementDrawableSpan moreChip = view.getMoreChip();
         assertEquals(mEditable.getSpanStart(moreChip), thirdStart);
         assertEquals(mEditable.getSpanEnd(moreChip), thirdNextEnd + 1);
 
@@ -630,7 +630,7 @@ public class ChipsTest extends AndroidTestCase {
         mEditable.setSpan(mMockRecips[mMockRecips.length - 1], thirdStart, thirdEnd, 0);
         assertEquals(mEditable.toString(), first + second + third);
         view.replaceChip(mMockRecips[mMockRecips.length - 3], RecipientEntry
-                .constructGeneratedEntry("replacement", "replacement@replacement.com", null, 0, true));
+                .constructGeneratedEntry("replacement", "replacement@replacement.com", true));
         assertEquals(mEditable.toString(), mTokenizer
                 .terminateToken("replacement <replacement@replacement.com>")
                 + second + third);
@@ -668,7 +668,7 @@ public class ChipsTest extends AndroidTestCase {
         mEditable.setSpan(mMockRecips[mMockRecips.length - 1], thirdStart, thirdEnd, 0);
         assertEquals(mEditable.toString(), first + second + third);
         view.replaceChip(mMockRecips[mMockRecips.length - 2], RecipientEntry
-                .constructGeneratedEntry("replacement", "replacement@replacement.com", null, 0, true));
+                .constructGeneratedEntry("replacement", "replacement@replacement.com", true));
         assertEquals(mEditable.toString(), first + mTokenizer
                 .terminateToken("replacement <replacement@replacement.com>") + third);
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 3]), firstStart);
@@ -701,7 +701,7 @@ public class ChipsTest extends AndroidTestCase {
         mEditable.setSpan(mMockRecips[mMockRecips.length - 1], thirdStart, thirdEnd, 0);
         assertEquals(mEditable.toString(), first + second + third);
         view.replaceChip(mMockRecips[mMockRecips.length - 1], RecipientEntry
-                .constructGeneratedEntry("replacement", "replacement@replacement.com", null, 0, true));
+                .constructGeneratedEntry("replacement", "replacement@replacement.com", true));
         assertEquals(mEditable.toString(), first + second + mTokenizer
                 .terminateToken("replacement <replacement@replacement.com>"));
         assertEquals(mEditable.getSpanStart(mMockRecips[mMockRecips.length - 3]), firstStart);
@@ -844,6 +844,34 @@ public class ChipsTest extends AndroidTestCase {
         assertEquals(mEditable.toString(), "<user1>, <user2@user.com>, ");
     }
 
+    @TargetApi(16)
+    public void testHandlePasteClip() {
+        MockRecipientEditTextView view = createViewForTesting();
+
+        ClipData clipData = null;
+        mEditable = new SpannableStringBuilder();
+        view.handlePasteClip(clipData);
+        assertEquals("", view.getText().toString());
+
+        clipData = ClipData.newPlainText("user label", "<foo@example.com>");
+        mEditable = new SpannableStringBuilder();
+        view.handlePasteClip(clipData);
+        assertEquals("<foo@example.com>", view.getText().toString());
+
+        clipData = ClipData.newHtmlText("user label",
+                "<bar@example.com>", "<a href=\"mailto:bar@example.com\">email</a>");
+        mEditable = new SpannableStringBuilder();
+        view.handlePasteClip(clipData);
+        assertEquals("<bar@example.com>", view.getText().toString());
+
+        ClipData.Item clipImageData = new ClipData.Item(Uri.parse("content://my/image"));
+        clipData = new ClipData("user label", new String[]{"image/jpeg"}, clipImageData);
+        mEditable = new SpannableStringBuilder();
+        view.handlePasteClip(clipData);
+        assertEquals("", view.getText().toString()
+        );
+    }
+
     public void testGetPastTerminators() {
         MockRecipientEditTextView view = createViewForTesting();
         view.setMoreItem(createTestMoreItem());
@@ -933,7 +961,7 @@ public class ChipsTest extends AndroidTestCase {
         mMockEntries = new RecipientEntry[size];
         for (int i = 0; i < size; i++) {
             mMockEntries[i] = RecipientEntry.constructGeneratedEntry("user",
-                    "user@username.com", null, 0, true);
+                    "user@username.com", true);
         }
         mMockRecips = new DrawableRecipientChip[size];
         for (int i = 0; i < size; i++) {
