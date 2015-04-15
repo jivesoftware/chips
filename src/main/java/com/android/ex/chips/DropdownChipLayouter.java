@@ -9,6 +9,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
+import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,8 +120,16 @@ public class DropdownChipLayouter {
                 }
                 break;
             case SINGLE_RECIPIENT:
-                destination = Rfc822Tokenizer.tokenize(entry.getDestination())[0].getAddress();
-                destinationType = null;
+                if (entry.getDestination()!=null) {
+                    Rfc822Token[] tokenize = Rfc822Tokenizer.tokenize(entry.getDestination());
+                    if ( tokenize.length > 0 ) {
+                        destination = tokenize[0].getAddress();
+                        destinationType = null;
+                    } else {
+                        destination = entry.getDestination();
+                        destinationType = null;
+                    }
+                }
         }
 
         // Bind the information to the view
@@ -184,6 +193,7 @@ public class DropdownChipLayouter {
 
         if (showImage) {
             switch (type) {
+                case SINGLE_RECIPIENT:
                 case BASE_RECIPIENT:
                     byte[] photoBytes = entry.getPhotoBytes();
                     if (photoBytes != null && photoBytes.length > 0) {
@@ -204,7 +214,6 @@ public class DropdownChipLayouter {
                         view.setImageResource(getDefaultPhotoResId());
                     }
                     break;
-                case SINGLE_RECIPIENT:
                 default:
                     break;
             }

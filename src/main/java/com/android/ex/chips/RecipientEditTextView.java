@@ -737,7 +737,6 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
             // was selected.
             if (origPhotoBytes == null) {
                 // TODO: cache this in the recipient entry?
-                Log.e("WTF","<-------- Begin photo fetch!");
                 getAdapter().fetchPhoto(contact, new PhotoManager.PhotoManagerCallback() {
                     @Override
                     public void onPhotoBytesPopulated() {
@@ -748,7 +747,6 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
 
                     @Override
                     public void onPhotoBytesAsynchronouslyPopulated() {
-                        Log.e("WTF","<-------- Got bytes!");
                         final byte[] loadedPhotoBytes = contact.getPhotoBytes();
                         final Bitmap icon = BitmapFactory.decodeByteArray(loadedPhotoBytes, 0,
                                 loadedPhotoBytes.length);
@@ -758,7 +756,6 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                     @Override
                     public void onPhotoBytesAsyncLoadFailed() {
                         // TODO: can the scaled down default photo be cached?
-                        Log.e("WTF","<-------- Bytes failed!");
                         tryDrawAndInvalidate(mDefaultContactPhoto);
                     }
 
@@ -770,14 +767,11 @@ public class RecipientEditTextView extends MultiAutoCompleteTextView implements
                         // So if we are on a background thread, post an invalidate call to the UI.
                         if (Looper.myLooper() == Looper.getMainLooper()) {
                             // The view might not redraw itself since it's loaded asynchronously
-                            Log.e("WTF","<-------- invalidate!");
                             invalidate();
                         } else {
-                            Log.e("WTF","---------> runnable invalidate begin!");
                             post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("WTF","--------> runnable invalidate finish!");
                                     invalidate();
                                 }
                             });
