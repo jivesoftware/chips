@@ -6,10 +6,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.0-beta3'
+        classpath 'com.android.tools.build:gradle:1.2.0-rc1'
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.2-jive3'
     }
 }
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
 
 android {
