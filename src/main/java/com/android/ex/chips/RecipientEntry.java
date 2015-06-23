@@ -257,7 +257,7 @@ public class RecipientEntry {
 
     @Override
     public String toString() {
-        return mDisplayName + " <" + mDestination + ">, isValid=" + mIsValid;
+        return mDisplayName + " <" + mDestination + ">";
     }
 
     /**

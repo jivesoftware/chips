@@ -110,6 +110,7 @@ class SimpleRecipientChip implements BaseRecipientChip {
 
     @Override
     public String toString() {
-        return mDisplay + " <" + mValue + ">";
+        String suffix = TextUtils.isEmpty(mValue) ? "" : " <" + mValue + ">";
+        return mDisplay + suffix;
     }
 }
